@@ -1,5 +1,20 @@
 <?php
 include_once("inc/conn.php");
+
+if (isset($_POST['register'])) {
+    $username = $_POST['username'];
+    $password = md5($_POST['password']);
+    $nama = $_POST['nama_lengkap'];
+    $level = $_POST['level'];
+
+    $insert = mysqli_query($conn, "INSERT INTO user(username,password,nama_lengkap,level) VALUES('$username','$password','$nama','$level')");
+
+    if ($insert) {
+        echo "<script>alert('Registrasi Berhasil'); location.href='index.php'</script>";
+    } else {
+        echo "<script>alert('Registrasi Tidak Berhasil')</script>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -30,6 +45,7 @@ include_once("inc/conn.php");
         }
 
         input[type="text"],
+        select,
         input[type="password"],
         input[type="submit"] {
             width: 100%;
@@ -43,27 +59,20 @@ include_once("inc/conn.php");
 </head>
 
 <body>
+
     <div class="container">
-        <h2>Login Aplikasi</h2>
-        <?php
-        if (isset($_POST['login'])) {
-            $username = $_POST['username'];
-            $password = md5($_POST['password']);
-            $data = mysqli_query($conn, "SELECT * FROM user WHERE username = '$username' AND password = '$password'");
-            $check = mysqli_num_rows($data);
-            if ($check > 0) {
-                $_SESSION['user'] = mysqli_fetch_array($data);
-                echo "<script>alert('Selamat Datang, Login Berhasil'); location.href='/pages/dashboard.php'</script>";
-            } else {
-                echo "<script>alert('Mohon Maaf Username/Password Salah')</script>";
-            }
-        }
-        ?>
+        <h2>Daftar Aplikasi</h2>
+
         <form method="POST">
+            <input type="text" name="nama_lengkap" placeholder="Nama Lengkap" required>
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
-            <button type="submit" name="login">Login</button>
-            <a href="register.php">Belum Punya Akun</a>
+            <select name="level">
+                <option value="admin">Admin</option>
+                <option value="peminjam">Peminjam</option>
+            </select>
+            <button type="submit" name="register">Register</button>
+            <a href="index.php">Login</a>
         </form>
     </div>
 </body>
